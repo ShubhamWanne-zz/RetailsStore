@@ -18,8 +18,8 @@ public class Customer extends AuditModel {
 	private static final long serialVersionUID = 1L;
 	
 	@Id
-	@GeneratedValue(strategy=GenerationType.SEQUENCE, generator="sequence_generator")
-	@SequenceGenerator(name="sequence_generator", sequenceName="customer_sequence", initialValue=1000)
+	@GeneratedValue(strategy=GenerationType.SEQUENCE, generator="customer_generator")
+	@SequenceGenerator(name="customer_generator", sequenceName="customer_sequence", initialValue=1000)
 	private Long id;
 	
 	@Column(columnDefinition= "text")

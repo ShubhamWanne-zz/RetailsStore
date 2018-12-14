@@ -17,8 +17,10 @@ public class CustomerController {
 	@Autowired
 	private CustomerRepository customerRepo;
 	
+	
 	@RequestMapping(path="/customers", method= RequestMethod.POST)
 	public Customer addCustomer(@Valid @RequestBody Customer customer) {
 		return customerRepo.save(customer);
 	}
+	
 }

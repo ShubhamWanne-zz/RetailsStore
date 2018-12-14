@@ -14,6 +14,8 @@ import javax.persistence.Table;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 @Entity
 @Table(name="product")
 public class Product extends AuditModel {
@@ -23,8 +25,8 @@ public class Product extends AuditModel {
 	private static final long serialVersionUID = 1L;
 	
 	@Id
-	@GeneratedValue(strategy= GenerationType.SEQUENCE, generator="sequence_generator")
-	@SequenceGenerator(name= "sequence_generator", sequenceName="bill_sequence", initialValue=100)
+	@GeneratedValue(strategy= GenerationType.SEQUENCE, generator="product_generator")
+	@SequenceGenerator(name= "product_generator", sequenceName="product_sequence", initialValue=100)
 	private Long id;
 	
 	@Column(columnDefinition= "text")
@@ -33,9 +35,16 @@ public class Product extends AuditModel {
 	@Column(columnDefinition= "text")
 	private ProductCategory category;
 	
-	@ManyToOne(fetch=FetchType.LAZY)
+	@Column()
+	private Double cost;
+	
+	@Column()
+	private Integer quantity;
+	
+	@ManyToOne(fetch=FetchType.LAZY, optional= false)
 	@JoinColumn(name="customer_id", nullable= false)
 	@OnDelete(action= OnDeleteAction.CASCADE)
+	@JsonIgnore
 	private Customer customer;
 	
 	public Long getId() {
@@ -64,6 +73,23 @@ public class Product extends AuditModel {
 	}
 	public void setCustomer(Customer customer) {
 		this.customer = customer;
+	}
+	public Double getCost() {
+		return cost;
+	}
+	public void setCost(Double cost) {
+		this.cost = cost;
+	}
+	public Integer getQuantity() {
+		return quantity;
+	}
+	public void setQuantity(Integer quantity) {
+		this.quantity = quantity;
+	}
+	@Override
+	public String toString() {
+		return "Product [id=" + id + ", name=" + name + ", category=" + category + ", cost=" + cost + ", quantity="
+				+ quantity + ", customer=" + customer + "]";
 	}
 
 }

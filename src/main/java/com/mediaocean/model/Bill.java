@@ -20,13 +20,15 @@ public class Bill extends AuditModel{
 	private static final long serialVersionUID = 1L;
 	
 	@Id
-	@GeneratedValue(strategy= GenerationType.SEQUENCE, generator="sequence_generator")
-	@SequenceGenerator(name= "sequence_generator", sequenceName="bill_sequence", initialValue=100)
+	@GeneratedValue(strategy= GenerationType.SEQUENCE, generator="bill_generator")
+	@SequenceGenerator(name= "bill_generator", sequenceName="bill_sequence", initialValue=100)
 	private Long id;
 	
 	@OneToOne(fetch= FetchType.LAZY, optional= false)
 	@JoinColumn(name="customer_id", nullable= false)
 	private Customer customer;
+		
+	private Double cost;
 	
 	public Long getId() {
 		return id;
@@ -40,7 +42,11 @@ public class Bill extends AuditModel{
 	public void setCustomer(Customer customer) {
 		this.customer = customer;
 	}
-	
-	
+	public Double getCost() {
+		return cost;
+	}
+	public void setCost(Double cost) {
+		this.cost = cost;
+	}
 	
 }
