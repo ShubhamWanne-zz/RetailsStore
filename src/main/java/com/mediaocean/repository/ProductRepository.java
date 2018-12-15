@@ -8,4 +8,5 @@ import com.mediaocean.model.Product;
 
 public interface ProductRepository extends JpaRepository<Product, Long>{
 	List<Product> findByCustomerId(Long id);
+	List<Product> deleteByCustomerId(Long id);
 }

@@ -36,7 +36,7 @@ public class BillController {
 	private Map<String, Object> createBill(@PathVariable Long customer_id){
 		Map<String , Object> checkout_details = new HashMap<>();
 		Customer customer =  customerRepo.findById(customer_id).orElseThrow(()->new CustomerNotFoundException("Customer with id "+customer_id+" not found."));
-		List<Resource<Product>> products = ProductResource.getProductResources(productRepo.findByCustomerId(customer_id));
+		List<Resource<Product>> products = ProductResource.getProductResources(productRepo.findByCustomerId(customer_id), customer_id);
 
 		if(products.size() == 0) {
 			checkout_details.put("total_count", 0);

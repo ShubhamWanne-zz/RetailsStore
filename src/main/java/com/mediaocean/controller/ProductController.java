@@ -2,6 +2,8 @@ package com.mediaocean.controller;
 
 import java.util.List;
 
+import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.Resource;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -35,17 +37,39 @@ public class ProductController {
 		
 	}
 	
+	@RequestMapping(path="/customers/{customerId}/products/{productsId}", method=RequestMethod.PUT)
+	public Resource<Product> updateProductDetails(@PathVariable Long customerId, 
+												@PathVariable Long productsId, 
+												@Valid@RequestBody Product product){
+		if(!customerRepo.existsById(customerId)) throw new CustomerNotFoundException("Customer with id "+customerId+" not found.");
+
+		Product productTemp = productRepo.findByCustomerId(customerId).stream().
+												filter(item-> item.getId() == productsId).
+												findFirst().
+												orElseThrow(()-> new ProductNotFoundException("Unable to find Product of id = "+productsId));
+		productTemp.setName(product.getName());
+		productTemp.setCategory(product.getCategory());
+		productTemp.setCost(product.getCost());
+		productTemp.setQuantity(product.getQuantity());	
+		
+		return ProductResource.getProductResource(productRepo.save(productTemp), customerId);
+	}
+	
+	
 	@RequestMapping(path= "/customers/{customer_id}/products" , method=RequestMethod.GET)
 	public List<Resource<Product>> getProducts(@PathVariable Long customer_id){
 		if(!customerRepo.existsById(customer_id)) throw new CustomerNotFoundException("Customer with id "+customer_id+" not found.");
-		List<Resource<Product>> products_resource = ProductResource.getProductResources(productRepo.findByCustomerId(customer_id));
+		List<Resource<Product>> products_resource = ProductResource.getProductResources(productRepo.findByCustomerId(customer_id), customer_id);
 		return products_resource;
 	}
 
-	@RequestMapping(path="/products/{product_id}", method= RequestMethod.GET)
-	public Resource<Product> getProduct(@PathVariable Long product_id){
-		Product product = productRepo.findById(product_id).orElseThrow(()->new ProductNotFoundException("Product with id "+product_id+" not found."));
-		return ProductResource.getProductResource(product);
+	@RequestMapping(path="customer/{customer_id}/products/{product_id}", method= RequestMethod.GET)
+	public Resource<Product> getProduct(@PathVariable Long customer_id, @PathVariable Long product_id){
+		Product product = productRepo.findByCustomerId(customer_id).stream().
+				filter(item-> item.getId() == product_id).
+				findFirst().
+				orElseThrow(()-> new ProductNotFoundException("Unable to find Product of id = "+product_id));
+		return ProductResource.getProductResource(product, customer_id);
 	}
 	
 }
